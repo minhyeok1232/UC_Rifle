@@ -53,8 +53,14 @@ UC_Rifle.uproject 우 클릭 후,
 ## 🔗 클래스 다이어그램
 ### 객체지향 설계를 반영한 클래스 구조도
 #### C++로 작성한 클래스 다이어그램
-![image](https://github.com/user-attachments/assets/7744f5d0-c374-45ae-877d-db0e367e0da0)
+#### Actor
+![image](https://github.com/user-attachments/assets/a4b4e611-021c-491e-afde-4bbe136d3ae4)
 
+#### Widget
+![image](https://github.com/user-attachments/assets/b417d9d1-996e-4d42-9c95-df982e185ab5)
+
+#### Notify
+![image](https://github.com/user-attachments/assets/5df21d3a-2383-4544-8b88-cd188c84015e)
 
 <details>
   <summary> 주요 클래스 설명 </summary>
@@ -78,7 +84,7 @@ UC_Rifle.uproject 우 클릭 후,
 
 #### Widget Script
 - CUserWidget_CrossHair : 크로스헤어 UI를 관리하는 위젯 클래스
-- CUserWidget_HUD : 게임 HUD를 표시하는 위젯 클래스 (UMG 활용)
+- CUserWidget_HUD : 게임 HUD를 표시하는 위젯 클래스
 
 #### Notify Script
 - CAnimNotify_Reload : 무기 재장전을 위한 애니메이션 노티파이 클래스
@@ -133,9 +139,15 @@ UC_Rifle.uproject 우 클릭 후,
   <summary>🎇 자세히 보기 </summary>
 
 - Montage를 활용하여 애니메이션의 특정 타이밍을 조정하였습니다.
-![image](https://github.com/user-attachments/assets/7bfad7e6-4812-43b6-91a6-e62bf2a667d2)
+#### Ex) Rifle_Reload_Montage
+![Image](https://github.com/user-attachments/assets/2bf8f2e5-661b-462b-bd4a-34ca6bfc55b0)
 - Animation Notify를 통해 '특정 프레임'에서 동작을 실행할 수 있습니다. 
-![image](https://github.com/user-attachments/assets/08bbc26c-610d-4808-9114-0b47045459cc)
+![image](https://github.com/user-attachments/assets/669f161f-8ab4-46df-9c29-88e28f2a7020)
+- 각 Notify에 Enum 형식의 Action Type에 따라 현재 Weapon의 해당 메소드를 수행합니다. 
+
+- Notify와 Notify State의 차이점
+  - Notify는 '특정 한 프레임'에서만 '한 번' 실행이 됩니다.
+  - Notify State는 구간 설정이 가능하기 때문에 시작과 끝에서 각각 이벤트 발생시켜야 합니다.
 
 </details>
 
@@ -144,71 +156,161 @@ UC_Rifle.uproject 우 클릭 후,
 <details>
   <summary>🎇 자세히 보기 </summary>
 
-  1️⃣ 무기 상태 관리 (CWeaponComponent)
-![image](https://github.com/user-attachments/assets/9f78c50f-42ba-46c2-808e-bd845827435d)
+#### 1️⃣ 무기 상태 관리 (CWeaponComponent)
+![image](https://github.com/user-attachments/assets/50920b49-a09e-438d-8763-1c9d70694475)
 - CWeaponComponent는 전반적인 무기의 상태를 관리하는 클래스입니다.
 - Delegate와 Enum을 사용하여 현재 장착중인 무기를 추적합니다.
-- Animation Notify를 사용하여 무기 장착, 공격, 해제 등의 상태 변화를 감지합니다.
+#### BP_Player에 사용 될 무기 리스트를 저장
+![image](https://github.com/user-attachments/assets/16f774aa-9051-4d07-9c76-5a7be44f5879)
 
-  2️⃣ 무기 동작을 담당하는 CDoAction과 CSubAction
-![image](https://github.com/user-attachments/assets/b20a3344-a463-43d2-aa6e-7dda9491a5e7)
-  - CDoAction → 메인 동작(마우스 1번) 담당
-  - CSubAction → 서브 동작(마우스 2번) 담당
-  ➡ 각 무기별로 서로 다른 공격 방식을 깔끔하게 분리되도록 설계하였습니다.
+#### 장착중인 무기 추적
+![image](https://github.com/user-attachments/assets/6db820cc-53de-4ba9-b897-fcd54ba3ae83)
 
-  3️⃣ 무기의 동작의 구조
-  - 메인 동작과 서브 동작을 상속받는 형태의 구조로 정리하였습니다.
-![image](https://github.com/user-attachments/assets/48dc2ebf-1e50-4a87-9122-c3f4fc0d90ae)
-- 각 무기별로 오버라이드하여 다른 동작을 실행하도록 구현하였습니다.
-- 구조를 깔끔하게 정리하여 유지보수성을 높일 수 있게 설계하였습니다.
+#### 2️⃣ 무기 동작을 담당하는 CWeapon
+![image](https://github.com/user-attachments/assets/d088d8f6-ef3a-4065-b3ba-2f814b046237)
+- WeaponComponent에서 추적된 무기에 실제 동작이 일어납니다.
+![image](https://github.com/user-attachments/assets/781eab89-1643-43d2-a5d8-3620c5b1cb0c)
+![image](https://github.com/user-attachments/assets/e7fff49a-01a1-42ff-a52b-7b4de0b2277f)
+- 각 무기에 대한 실제 동작이 일어납니다.
+
+#### 3️⃣ 무기 시스템 계층 구조
+![image](https://github.com/user-attachments/assets/28680b96-2ff3-4ef2-8620-a4c247bd9fff)
+- 각 무기마다 조준 방식(FOV, 카메라 거리 등)이 다르기 때문에, 구조체를 활용하여 일관된 방식으로 데이터를 관리하였습니다.
+![image](https://github.com/user-attachments/assets/2e3c9762-833e-45b3-ba22-542d6778fdef)
+- Weapon에 상속받는 각 무기들에 대한 정보를 저장하였습니다.
+![image](https://github.com/user-attachments/assets/3c466318-5cc6-4af1-b370-eef031fc2e40)
+- 또한, override 지정자를 활용하여 부모 클래스의 함수를 재정의(Override)함으로써, 각 무기의 개별적인 동작을 구현하였습니다.
 
   </details>
 
-### 카메라 시스템
+### 발사 시스템 개선
 
  <details>
   <summary>🎇 자세히 보기 </summary>
 
-#### Matinee Camera Shake, Camera Animation
-#### 카메라의 이동 경로와 회전값을 미리 지정하여 부드러운 연출 가능
-![image](https://github.com/user-attachments/assets/ec1e17c7-2260-4108-8bd0-2af45686f0ea)
-- 특정 애니메이션 프레임에서 Animation Notify를 사용하였습니다. <br>
-![image](https://github.com/user-attachments/assets/2435570c-cf83-4043-877d-2d075bc4e11c)
-![image](https://github.com/user-attachments/assets/2b4568a8-41df-457a-9c5f-3fe22ebd549a) 
-- 'CameraAnim이 실행되면서 Notify_Begin에서 Camera Animation이 시작됩니다.
-![image](https://github.com/user-attachments/assets/32559555-07fa-4b47-9446-19425d082621)
-- UCameraModifier를 상속받은 UCCameraModifier에서 Camera Animation 역할을 수행합니다.
-- SetLocation() 및 SetRotation()을 통해 카메라의 이동 및 회전을 설정합니다.
-![image](https://github.com/user-attachments/assets/f02ebc7b-4a87-467d-b2a6-7b50f59949d2)
-- Camera Animation으로 생성된 CA_Fist에서 특정 구간에 키(Key)를 추가하여 좌표를 설정합니다.
+  ```cpp
 
-#### Matinee Camera Shake
-![image](https://github.com/user-attachments/assets/2b4568a8-41df-457a-9c5f-3fe22ebd549a) <br>
-마찬가지로, 특정 애니메이션 프레임에서 Animation Notify를 사용하였습니다.
+void ACWeapon::OnFiring()
+{
+	UCameraComponent* camera = CHelpers::GetComponent<UCameraComponent>(Owner);
+	FVector direction = camera->GetForwardVector();
+	FTransform transform = camera->GetComponentToWorld();  // 월드상에서 SRT
+
+	FVector  start = transform.GetLocation() + direction;  // Gap을 생성
+	FVector  end;
+	
+	direction = UKismetMathLibrary::RandomUnitVectorInConeInDegrees(direction, RecoilAngle);
+	end = transform.GetLocation() + direction * HitDistance;
+
+	TArray<AActor*> ignores;
+	ignores.Add(Owner);
+
+	FHitResult hitResult;
+	UKismetSystemLibrary::LineTraceSingle(GetWorld(), start, end, ETraceTypeQuery::TraceTypeQuery1, false, ignores, EDrawDebugTrace::None, hitResult, true);
+
+	if (hitResult.bBlockingHit)
+	{
+		FRotator rotator = hitResult.ImpactNormal.Rotation(); // 표면의 Normat을 이용하여 rotation
+		if (!!HitDecal)
+		{
+			UDecalComponent* decal;
+			decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(5),
+				hitResult.Location, rotator, 4);
+			decal->SetFadeScreenSize(0);  // Fade이면 : 거리계산을 꺼준자
+		}
+		if (!!HitParticle)
+		{
+			FRotator impcatRotation = UKismetMathLibrary::FindLookAtRotation(hitResult.Location,
+				hitResult.TraceStart);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, hitResult.Location, impcatRotation);
+
+		}
+    }
+
+	// 탄피배출
+	if (!!EjectParticle)
+	{
+		UGameplayStatics::SpawnEmitterAttached(EjectParticle, Mesh, "Eject", FVector::ZeroVector,
+			FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset);
+	}
+	// 총구 Effect
+	if (!!FlashParticle)
+	{
+		UGameplayStatics::SpawnEmitterAttached(FlashParticle, Mesh, "Muzzle", FVector::ZeroVector,
+			FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset);
+	}
+
+	// Sound
+	if (!!FireSound)
+	{
+		FVector muzzleLocation = Mesh->GetSocketLocation("Muzzle");
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, muzzleLocation);
+	}
+
+	// CameraShake를 run하면 콘트롤러가 필요함
+	if (!!CameraShakeClass)
+	{
+		APlayerController* controller = Owner->GetController<APlayerController>();
+		if (!!controller)
+			controller->PlayerCameraManager->StartCameraShake(CameraShakeClass);
+
+	}
+
+	// 반동주기 : -를 주는 이유: 
+	Owner->AddControllerPitchInput(-RecoilRate * UKismetMathLibrary::RandomFloatInRange(0.8, 1.2));
+
+
+	// cross_hair
+	{
+		if (CurrSpreadRadius <= 1.0f)
+		{
+			CurrSpreadRadius += SpreadSpeed * GetWorld()->GetDeltaSeconds();
+			if (!!CrossHair)
+				CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
+		}
+		LastAddSpreadTime = GetWorld()->GetRealTimeSeconds();
+	}
+
+	// Bullet
+	if(!!BulletClass)
+	{
+		FVector bulletLocation = Mesh->GetSocketLocation("Muzzle_Bullet");
+		FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ACBullet* bullet = GetWorld()->SpawnActor<ACBullet>(BulletClass, bulletLocation, direction.Rotation(), params);
+		if (!!bullet)
+			bullet->Shoot(direction);
+	}
+
+	CurrMagazineCount--;
+	if (CurrMagazineCount <= 0)
+	{
+		if (CanReload())
+			Reload();
+	}
+}
+
+
+```  
+  
 
 </details>
 
 
 
-## ⚡ 프로젝트 최적화 과정
-### ✨ C++ 와 블루프린트 연계 
-- `BlueprintNativeEvent`, `BlueprintImplementableEvent`, `BlueprintCallable`을 활용하여 C++과 Blueprint 사이에서 연동하였습니다.
-  - 연산이 많이 필요한 핵심 로직은 C++로 처리하여 성능 최적화
-  - 시각적 연출 및 애니메이션 등은 Blueprint로 구현
- <details>
-  <summary>🎇 언리얼 블루프린트 함수 유형 정리 </summary>
-   
-   #### BlueprintCallable :
-   - C++ 로 작성, 블루프린트 그래프에서 호출 가능하지만 변경이나 덮어쓰기는 불가능합니다. (ex.수학 함수)
 
-   #### BlueprintImplementableEvent :
-   - 헤더 파일(.h) 에 추가되지만, 함수 본문은 C++ 가 아닌 블루프린트 그래프에서 작성됩니다.
-   - 표준 동작이 없는 이벤트를 자유롭게 변경할 수 있도록 하는 경우에 사용합니다. (ex.각 보스마다 다른 보상을 줌)
-     
-   #### BlueprintNativeEvent :
-   - BlueprintCallable 과 BlueprintImplementableEvent 의 조합형으로 C++ 로 작성되었지만, 블루프린트에서 보조 또는 대체 가능합니다.
-   - BlueprintNativeEvent 를 사용할 때는 함수 마지막에 "_Implementation" 을 붙여야 합니다.
-     ![image](https://github.com/user-attachments/assets/cd7720a0-b428-43c8-92e6-a17a47808a90)
+
+## ⚡ 프로젝트 최적화 과정
+### ✨ 코드 재사용성 증가
+
+ <details>
+  <summary>🎇 자세히 보기 </summary>
+
+  #### 직접 제작한 유틸리티 클래스를 활용하여 코드 재사용성을 높였습니다.
+![image](https://github.com/user-attachments/assets/9177fdce-73a3-4452-a323-8590c164ab4e)
+![image](https://github.com/user-attachments/assets/882aab86-e6a0-461b-9067-d4232dffa03f)
+- Unreal에서 제공하는 유틸리티 함수를 활용하여 객체를 찾거나 특정 기능을 쉽게 수행할 수 있도록 설계하였습니다.
 
    </details>
 
