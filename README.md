@@ -59,26 +59,32 @@ UC_Rifle.uproject 우 클릭 후,
 <details>
   <summary> 주요 클래스 설명 </summary>
 
-#### Characters Script
-- CAnimInstance : 애니메이션 블루프린트와 연동하여, 캐릭터의 모션을 처리하는 클래스
-- ICharacter : 캐릭터의 공통 기능(머터리얼 변경 등)을 정의하는 인터페이스
-- CPlayer : 플레이어 캐릭터의 입력, 무기 변경, 회피 등의 기능을 담당하는 클래스
-- CEnemy : 적 AI의 상태, 피격 반응, 사망 등을 처리하는 클래스
-
-#### Components Script
-- CMontageComponent.cpp → 애니메이션 몽타주를 관리하는 클래스
-- CMovementComponent : 캐릭터 이동을 관리하는 클래스
-- CStateComponent : 캐릭터의 상태머신(FSM)을 관리하는 클래스
-- CStatusComponent : 체력 및 스탯(HP, 데미지 등)과 관련된 데이터를 관리하는 클래스
+#### Character Script
+- CPlayer : 플레이어 캐릭터의 입력 등의 기능을 담당하는 클래스
+- CAnimInstance : 애니메이션 블루프린트와 연동하여, 캐릭터의 3인칭 애니메이션을 처리하는 클래스
+- CAnimInstance_Arms : 애니메이션 블루프린트와 연동하여, 캐릭터의 1인칭 애니메이션을 처리하는 클래스
 - CWeaponComponent : 무기 상태(장착, 변경 등) 및 공격 실행을 제어하는 클래스
 
 #### Weapon Script
-- CDoAction : 기본 공격(마우스 1번) 로직을 처리하는 클래스
-- CSubAction : 특수 공격(마우스 2번)과 관련된 로직을 처리하는 클래스
-- CWeaponData : 무기 관련 데이터를 관리하는 클래스
-- CWeaponAsset : 무기 Data Asset을 관리하는 클래스
-- Equipment : 무기 장착 및 해제를 담당하는 클래스
-- CAttachment : 무기 부착물(Attachment)과 충돌 판정을 관리하는 클래스
+- CWeapon : 무기 동작을 처리하는 클래스
+- CWeaponComponent : 무기 상태(장착, 변경 등) 및 공격 실행을 제어하는 클래스
+- CWeapon_AR4, CWeapon_AK47, CWeapon_Pistol : CWeapon을 상속받아 각각의 무기에 대한 고유한 기능을 구현하는 클래스
+- CBullet : 총알의 동작을 제어하는 클래스
+- CMagazine : 탄창 관련 로직을 담당하는 클래스
+
+#### Utilities Script 
+- CLog : UE_LOG 매크로를 활용하여 로그 출력 기능을 제공하는 클래스
+- CHelpers : 객체를 찾거나 특정 기능을 쉽게 수행할 수 있게 코드 재사용성을 높이는 역할을 하는 클래스
+
+#### Widget Script
+- CUserWidget_CrossHair : 크로스헤어 UI를 관리하는 위젯 클래스
+- CUserWidget_HUD : 게임 HUD를 표시하는 위젯 클래스 (UMG 활용)
+
+#### Notify Script
+- CAnimNotify_Reload : 무기 재장전을 위한 애니메이션 노티파이 클래스
+- CAnimNotifyState_Equip : 무기 장착 애니메이션 상태를 관리하는 클래스
+
+
 
 
 </details>
